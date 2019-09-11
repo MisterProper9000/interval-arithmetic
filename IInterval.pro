@@ -19,9 +19,9 @@ SOURCES += main.cpp \
     ClassicInterval.cpp
 
 HEADERS += \
-    IInterval.h \
     error.h \
     SHARED_EXPORT.h \
+    IInterval.h \
     ILog.h
 
 LIBS += "..\IInterval-build-desktop-Qt_4_7_4__mingw_________\debug\ILog.dll"

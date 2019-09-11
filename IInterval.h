@@ -47,6 +47,7 @@ public:
     static IInterval* add(IInterval const* const left, IInterval const* const right);
     static IInterval* subtract(IInterval const* const left, IInterval const* const right);
     static IInterval* multiply(IInterval const* const left, IInterval const* const right);
+    static IInterval* multiply(IInterval const* const left, double right);
     static IInterval* divide(IInterval const* const left, IInterval const* const right);
 
     /*operators
@@ -54,6 +55,7 @@ public:
     virtual int add(IInterval const* const right) = 0;
     virtual int subtract(IInterval const* const right) = 0;
     virtual int multiply(IInterval const* const right) = 0;
+    virtual int multiply(double right) = 0;
     virtual int divide(IInterval const* const right) = 0;
 
     /*comparators*/

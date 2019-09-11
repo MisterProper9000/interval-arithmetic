@@ -23,6 +23,7 @@ namespace {
         virtual int add(IInterval const* const right);
         virtual int subtract(IInterval const* const right);
         virtual int multiply(IInterval const* const right);
+        virtual int multiply(double right);
         virtual int divide(IInterval const* const right);
 
         /*comparators*/
@@ -144,9 +145,33 @@ int ClassicInterval::multiply(IInterval const* const right)
         ILog::report("IInterval.multiply: double overfulls");
         return ERR_OVERFULL;
     }
-    m_left = std::min(std::min(m_left*r_a,m_left*r_b),std::min(m_right*r_a,m_right*r_b));
-    m_right = std::max(std::max(m_left*r_a,m_left*r_b),std::max(m_right*r_a,m_right*r_b));
+    double this_left = m_left, this_right = m_right;
+    m_left = std::min(std::min(this_left*r_a,this_left*r_b),std::min(this_right*r_a,this_right*r_b));
+    m_right = std::max(std::max(this_left*r_a,this_left*r_b),std::max(this_right*r_a,this_right*r_b));
 
+    return ERR_OK;
+}
+
+int ClassicInterval::multiply(double right)
+{
+    if(isnan(m_left * right) || isnan(m_right * right))
+    {
+        ILog::report("IInterval.multiply: double overfulls");
+        return ERR_OVERFULL;
+    }
+    if(right >= 0)
+    {
+        m_left *= right;
+        m_right *= right;
+    }
+    else
+    {
+        m_left += m_right;
+        m_right = m_left - m_right;
+        m_left -= m_right;
+        m_left *= right;
+        m_right *= right;
+    }
     return ERR_OK;
 }
 
@@ -177,8 +202,9 @@ int ClassicInterval::divide(IInterval const* const right)
         ILog::report("IInterval.divide: double overfulls");
         return ERR_OVERFULL;
     }
-    m_left = std::min(std::min(m_left*r_a,m_left*r_b),std::min(m_right*r_a,m_right*r_b));
-    m_right = std::max(std::max(m_left*r_a,m_left*r_b),std::max(m_right*r_a,m_right*r_b));
+    double this_left = m_left, this_right = m_right;
+    m_left = std::min(std::min(this_left*r_a,this_left*r_b),std::min(this_right*r_a,this_right*r_b));
+    m_right = std::max(std::max(this_left*r_a,this_left*r_b),std::max(this_right*r_a,this_right*r_b));
 
     return ERR_OK;
 }
@@ -234,6 +260,34 @@ IInterval* IInterval::multiply(IInterval const* const left, IInterval const* con
     IInterval* res = left->clone();
     if(!res)
     {
+        return 0;
+    }
+
+    if (res->multiply(right) == ERR_OK)
+        return res;
+    else
+        return 0;
+}
+
+IInterval* IInterval::multiply(const IInterval *const left, double right)
+{
+    if (!left)
+    {
+        ILog::report("IInterval.multiply: operand of division is nullptr, expected IInterval pointer");
+        return 0;
+    }
+
+    IInterval* interv = IInterval::createInterval(right, right, BOUNDS);
+    if(!interv)
+    {
+        ILog::report("IInterval.multiply: memory allocation error");
+        return 0;
+    }
+
+    IInterval* res = left->clone();
+    if(!res)
+    {
+        ILog::report("IInterval.multiply: memory allocation error");
         return 0;
     }
 
