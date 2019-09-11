@@ -11,16 +11,6 @@ public:
         DIMENSION_INTERFACE_IMPL,
     };
 
-    /*error enum
-      well, something like that*/
-    enum ErrorEnum {
-        ERR_OK,
-        ERR_WRONG_ARG,
-        ERR_OUT_OF_MEMORY,
-        ERR_DIV_BY_ZERO,
-        ERR_ACCURACY_LOST,
-    };
-
     /*ctor enum
       interval can be constructed by
       left and right bounds or center and radius.
@@ -32,19 +22,22 @@ public:
     };
 
     /*comparison enum
-      default mode is mode which we are
-      discussing with Ivankov.
+      default mode -- comparison of sup and inf of intervals
       Dispersion mode -- comparison of intervals length.
       MEAN_EXTR -- comparison of mean values of intervals bounds
       COMP_QUART -- comparison of interquartile ranges (in case of uniform
       distribution this is the same as MEAN_EXTR, and for now all intervals
-      are uniformly distributed)*/
+      are uniformly distributed)
+      CONCENTRATION -- comparison of a/b value of two [a, b] intervals */
     enum COMP_MODE {
         COMP_DEFAULT,
         COMP_DISPERSION,
         COMP_MEAN_EXTR,
-        //COMP_QUART,
+        COMP_CONCENTRATION,
+        COMP_QUART,
     };
+
+    virtual int getId() const = 0;
 
     /*factories*/
     static IInterval* createInterval(double a, double b, CTORenum mode);
@@ -66,11 +59,23 @@ public:
     /*comparators*/
     /*The result argument passed by pointer, to have an ability to detect
       incomparable intervals with nullptr value (under discussion)*/
-    virtual int gt(IInterval const* const right, bool* result, COMP_MODE mode = COMP_DEFAULT) const = 0;
-    virtual int lt(IInterval const* const right, bool* result, COMP_MODE mode = COMP_DEFAULT) const = 0;
-    virtual int eq(IInterval const* const right, bool* result, COMP_MODE mode = COMP_DEFAULT) const = 0;
+    virtual int gt(IInterval const* const right, bool& result, COMP_MODE mode = COMP_DEFAULT) const = 0;
+    virtual int lt(IInterval const* const right, bool& result, COMP_MODE mode = COMP_DEFAULT) const = 0;
+    virtual int eq(IInterval const* const right, bool& result, COMP_MODE mode = COMP_DEFAULT) const = 0;
 
-    /*utils*/
+    virtual int contains(IInterval const* const right, bool& result) const = 0;
+    virtual int contains(double right, bool& result) const = 0;
+
+    virtual int mid(double& res) const = 0;
+    virtual int wid(double& res) const = 0;
+    virtual int rad(double& res) const = 0;
+    virtual int inf(double& res) const = 0;
+    virtual int sup(double& res) const = 0;
+    virtual int magnitude(double& res) const = 0;
+    virtual int mignitude(double& res) const = 0;
+    virtual int dev(double& res) const = 0;
+    virtual int measureOfConcentration(double& res) const = 0;
+
     virtual IInterval* clone() const = 0;
 
     /*dtor*/
