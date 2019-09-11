@@ -396,7 +396,7 @@ int ClassicInterval::lt(IInterval const* const right, bool& result, COMP_MODE mo
         right->sup(r_b);
         if(r_a == r_b || m_left == m_right)
         {
-            ILog::report("IInterval.gt: cannot compute concentration of zero width interval");
+            ILog::report("IInterval.lt: cannot compute concentration of zero width interval");
             return ERR_ANY_OTHER;
         }
         double con1, con2;
@@ -448,7 +448,7 @@ int ClassicInterval::eq(IInterval const* const right, bool& result, COMP_MODE mo
         right->sup(r_b);
         if(r_a == r_b || m_left == m_right)
         {
-            ILog::report("IInterval.gt: cannot compute concentration of zero width interval");
+            ILog::report("IInterval.eq: cannot compute concentration of zero width interval");
             return ERR_ANY_OTHER;
         }
         double con1, con2;
@@ -503,7 +503,7 @@ int ClassicInterval::wid(double& res) const
 {
     if(isnan(m_right - m_left))
     {
-        ILog::report("IInterval.subtract: double overfulls");
+        ILog::report("IInterval.wid: double overfulls");
         return ERR_OVERFULL;
     }
     res = m_right - m_left;
@@ -514,7 +514,7 @@ int ClassicInterval::rad(double& res) const
 {
     if(isnan(m_right/2 - m_left/2))
     {
-        ILog::report("IInterval.subtract: double overfulls");
+        ILog::report("IInterval.rad: double overfulls");
         return ERR_OVERFULL;
     }
     res = m_right/2 - m_left/2;
@@ -564,7 +564,7 @@ int ClassicInterval::measureOfConcentration(double& res) const
     contains(0.,b);
     if(b)
     {
-        ILog::report("IInterval.gt: cannot compute concentration of zero width interval");
+        ILog::report("IInterval.measureOfConcentration: cannot compute concentration of zero width interval");
         return ERR_ANY_OTHER;
     }
 
